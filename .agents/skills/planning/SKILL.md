@@ -1,13 +1,11 @@
 ---
 name: planning
-description: Generate comprehensive plans for new features by exploring the codebase, synthesizing approaches, validating with spikes, and decomposing into beads. Use when asked to plan a feature, create a roadmap, or design an implementation approach.
+description: Generates comprehensive feature plans by exploring the codebase, synthesizing approaches, validating risky parts with spikes, and decomposing work into beads. Use when a feature or implementation roadmap is needed.
 ---
 
 # Feature Planning Pipeline
 
-**Systematic discovery → synthesis → verification → decomposition for feature planning.**
-
-Generate quality plans through systematic discovery, synthesis, verification, and decomposition.
+Systematic discovery → synthesis → verification → decomposition for feature planning.
 
 ## Pipeline Overview
 
@@ -19,7 +17,7 @@ USER REQUEST → Discovery → Synthesis → Verification → Decomposition → 
 | ----------------- | ---------------------------------------- | ----------------------------------- |
 | 1. Discovery      | Parallel sub-agents, gkg, Librarian, exa | Discovery Report                    |
 | 2. Synthesis      | Oracle                                   | Approach + Risk Map                 |
-| 3. Verification   | Spikes via orchestrator skill            | Validated Approach + Learnings      |
+| 3. Verification   | Spikes via orchestrating-beads skill     | Validated Approach + Learnings      |
 | 4. Decomposition  | filing-beads skill                       | .beads/\*.md files                  |
 | 5. Refinement     | reviewing-beads skill                    | Polished beads ready for workers    |
 | 6. Validation     | bv + Oracle                              | Validated dependency graph          |
@@ -37,36 +35,9 @@ Librarian → External patterns ("how do similar projects do this?")
 exa → Library docs (if external integration needed)
 ```
 
-### Discovery Report Template
+### Discovery Report
 
-Save to `history/<feature>/discovery.md`:
-
-```markdown
-# Discovery Report: <Feature Name>
-
-## Architecture Snapshot
-
-- Relevant packages: ...
-- Key modules: ...
-- Entry points: ...
-
-## Existing Patterns
-
-- Similar implementation: <file> does X using Y pattern
-- Reusable utilities: ...
-- Naming conventions: ...
-
-## Technical Constraints
-
-- Node version: ...
-- Key dependencies: ...
-- Build requirements: ...
-
-## External References
-
-- Library docs: ...
-- Similar projects: ...
-```
+Save to `history/<feature>/discovery.md`. See `reference/discovery-template.md` for full template.
 
 ## Phase 2: Synthesis (Oracle)
 
@@ -107,39 +78,13 @@ Blast radius >5 files? ─── YES → HIGH
                        └── NO  → MEDIUM
 ```
 
-Save to `history/<feature>/approach.md`:
-
-```markdown
-# Approach: <Feature Name>
-
-## Gap Analysis
-
-| Component | Have | Need | Gap |
-| --------- | ---- | ---- | --- |
-| ...       | ...  | ...  | ... |
-
-## Recommended Approach
-
-<Description>
-
-### Alternative Approaches
-
-1. <Option A> - Tradeoff: ...
-2. <Option B> - Tradeoff: ...
-
-## Risk Map
-
-| Component   | Risk | Reason           | Verification |
-| ----------- | ---- | ---------------- | ------------ |
-| Stripe SDK  | HIGH | New external dep | Spike        |
-| User entity | LOW  | Follows existing | Proceed      |
-```
+Save to `history/<feature>/approach.md`. See `reference/approach-template.md` for full template.
 
 ## Phase 3: Verification (Risk-Based)
 
 ### For HIGH Risk Items → Create Spike Beads
 
-Spikes are mini-plans executed via the orchestrator skill:
+Spikes are mini-plans executed via the orchestrating-beads skill:
 
 ```bash
 bd create "Spike: <question to answer>" -t epic -p 0
@@ -149,30 +94,11 @@ bd create "Spike: Verify Y" -t task --deps <spike-epic>
 
 ### Spike Bead Template
 
-```markdown
-# Spike: <specific question>
-
-**Time-box**: 30 minutes
-**Output location**: .spikes/<spike-id>/
-
-## Question
-
-Can we <specific technical question>?
-
-## Success Criteria
-
-- [ ] Working throwaway code exists
-- [ ] Answer documented (yes/no + details)
-- [ ] Learnings captured for main plan
-
-## On Completion
-
-Close with: `bd close <id> --reason "YES: <approach>" or "NO: <blocker>"`
-```
+See `reference/spike-template.md` for the full spike bead template.
 
 ### Execute Spikes
 
-Use the orchestrator skill:
+Use the orchestrating-beads skill:
 
 1. `bv --robot-plan` to parallelize spikes
 2. `Task()` per spike with time-box
@@ -232,155 +158,43 @@ See `.spikes/billing-spike/webhook-test/` for working example.
 ```
 ## Phase 5: Refinement (reviewing-beads skill)
 
-Polish beads for clarity and completeness before validation:
-
-```bash
-skill("reviewing-beads")
-```
-
-The skill checks each bead for:
-
-- **Clarity**: Action-oriented titles, unambiguous descriptions
-- **Completeness**: Acceptance criteria, technical hints, file paths
-- **Dependencies**: All blockers linked, no over-coupling
-- **Scope**: Appropriately sized, no duplicates
-
-Common fixes:
-
-- Vague titles → Specific action-oriented titles
-- Missing context → Add file paths, function names
-- Implicit assumptions → Make explicit
-- Missing acceptance criteria → Add "Done when..." statements
+Run `skill("reviewing-beads")` to polish beads. See that skill for the full quality checklist (clarity, completeness, dependencies, scope, priority).
 
 ## Phase 6: Validation
 
-### Run bv Analysis
+Run bv analysis and fix issues. If issues found, re-run `reviewing-beads` skill.
 
 ```bash
 bv --robot-suggest   # Find missing dependencies
 bv --robot-insights  # Detect cycles, bottlenecks
 bv --robot-priority  # Validate priorities
-```
-
-### Fix Issues
-
-```bash
 bd dep add <from> <to>      # Add missing deps
 bd dep remove <from> <to>   # Break cycles
-bd update <id> --priority X # Adjust priorities
 ```
 
-### Oracle Final Review
+Oracle final review:
 
 ```
 oracle(
   task: "Review plan completeness and clarity",
-  context: "Plan ready. Check for gaps, unclear beads, missing deps.",
   files: [".beads/"]
 )
 ```
 
 ## Phase 7: Track Planning
 
-This phase creates an **execution-ready plan** so the orchestrator can spawn workers immediately without re-analyzing beads.
+Creates an **execution-ready plan** for the orchestrating-beads skill.
 
-### Step 1: Get Parallel Tracks
+1. Get tracks: `bv --robot-plan 2>/dev/null | jq '.plan.tracks'`
+2. Assign non-overlapping file scopes per track
+3. Generate agent names (adjective+noun: BlueLake, GreenCastle, etc.)
+4. Save to `history/<feature>/execution-plan.md`. See `reference/execution-plan-template.md`.
 
-```bash
-bv --robot-plan 2>/dev/null | jq '.plan.tracks'
-```
-
-### Step 2: Assign File Scopes
-
-For each track, determine the file scope based on beads in that track:
+Final check:
 
 ```bash
-# For each bead, check which files it touches
-bd show <bead-id>  # Look at description for file hints
-```
-
-**Rules:**
-
-- File scopes must NOT overlap between tracks
-- Use glob patterns: `packages/sdk/**`, `apps/server/**`
-- If overlap unavoidable, merge into single track
-
-### Step 3: Generate Agent Names
-
-Assign unique adjective+noun names to each track:
-
-- BlueLake, GreenCastle, RedStone, PurpleBear, etc.
-- Names are memorable identifiers, NOT role descriptions
-
-### Step 4: Create Execution Plan
-
-Save to `history/<feature>/execution-plan.md`:
-
-```markdown
-# Execution Plan: <Feature Name>
-
-Epic: <epic-id>
-Generated: <date>
-
-## Tracks
-
-| Track | Agent       | Beads (in order)      | File Scope        |
-| ----- | ----------- | --------------------- | ----------------- |
-| 1     | BlueLake    | bd-10 → bd-11 → bd-12 | `packages/sdk/**` |
-| 2     | GreenCastle | bd-20 → bd-21         | `packages/cli/**` |
-| 3     | RedStone    | bd-30 → bd-31 → bd-32 | `apps/server/**`  |
-
-## Track Details
-
-### Track 1: BlueLake - <track-description>
-
-**File scope**: `packages/sdk/**`
-**Beads**:
-
-1. `bd-10`: <title> - <brief description>
-2. `bd-11`: <title> - <brief description>
-3. `bd-12`: <title> - <brief description>
-
-### Track 2: GreenCastle - <track-description>
-
-**File scope**: `packages/cli/**`
-**Beads**:
-
-1. `bd-20`: <title> - <brief description>
-2. `bd-21`: <title> - <brief description>
-
-### Track 3: RedStone - <track-description>
-
-**File scope**: `apps/server/**`
-**Beads**:
-
-1. `bd-30`: <title> - <brief description>
-2. `bd-31`: <title> - <brief description>
-3. `bd-32`: <title> - <brief description>
-
-## Cross-Track Dependencies
-
-- Track 2 can start after bd-11 (Track 1) completes
-- Track 3 has no cross-track dependencies
-
-## Key Learnings (from Spikes)
-
-Embedded in beads, but summarized here for orchestrator reference:
-
-- <learning 1>
-- <learning 2>
-```
-
-### Final Sanity Check
-
-Before finalizing, verify:
-
-```bash
-# No cycles in the graph
-bv --robot-insights 2>/dev/null | jq '.Cycles'
-
-# All beads assigned to tracks
-bv --robot-plan 2>/dev/null | jq '.plan.unassigned'
+bv --robot-insights 2>/dev/null | jq '.Cycles'  # Must be empty
+bv --robot-plan 2>/dev/null | jq '.plan.unassigned'  # Must be empty
 ```
 
 ## Output Artifacts

@@ -3,11 +3,9 @@ name: filing-beads
 description: Converts plans into Beads epics and issues with proper dependencies and priorities. Use when filing issues from a plan, creating epics, or setting up a project backlog.
 ---
 
-# File Beads Epics and Issues from Plan
+# Filing Beads from Plan
 
-**Used in Planning Phase 4: Decomposition.**
-
-Convert a plan into a comprehensive set of Beads epics and issues.
+Used in Planning Phase 4: Decomposition. Beads may be backed by `.beads/*.md` files; use `bd` commands as the primary interface.
 
 ## Inputs
 

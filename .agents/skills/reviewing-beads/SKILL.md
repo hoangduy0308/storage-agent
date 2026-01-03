@@ -3,11 +3,9 @@ name: reviewing-beads
 description: Reviews, proofreads, and refines Beads epics and issues for clarity, completeness, and correct dependencies. Use when polishing issues before implementation or auditing issue quality.
 ---
 
-# Review and Refine Beads Issues
+# Reviewing Beads Issues
 
-**Used in Planning Phases 5-6: Refinement and Validation.**
-
-Thoroughly review, proofread, and polish filed Beads epics and issues to ensure workers have a smooth implementation experience.
+Used in Planning Phase 5: Refinement (and during Validation if issue quality problems are found).
 
 ## Step 1: Load Current Issues
 
