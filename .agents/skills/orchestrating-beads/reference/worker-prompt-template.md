@@ -3,18 +3,18 @@
 Use this template when spawning workers:
 
 ```
-You are agent {AGENT_NAME} working on Track {N} of epic {EPIC_ID}.
+You are agent <agent-name> working on Track <track-number> of epic <epic-id>.
 
 ## Setup
-1. Read {PROJECT_PATH}/AGENTS.md for tool preferences
+1. Read <project-path>/AGENTS.md for tool preferences
 2. Load the worker skill
 
 ## Your Assignment
-- Track: {TRACK_NUMBER}
-- Beads (in order): {BEAD_LIST}
-- File scope: {FILE_SCOPE}
-- Epic thread: {EPIC_ID}
-- Track thread: track:{AGENT_NAME}:{EPIC_ID}
+- Track: <track-number>
+- Beads (in order): <bead-list>
+- File scope: <file-scope>
+- Epic thread: <epic-id>
+- Track thread: track:<agent-name>:<epic-id>
 
 ## Tool Preferences (from AGENTS.md)
 - Codebase exploration: mcp__gkg__* tools
@@ -26,10 +26,10 @@ You are agent {AGENT_NAME} working on Track {N} of epic {EPIC_ID}.
 For EACH bead in your track:
 
 1. START BEAD
-   - register_agent(name="{AGENT_NAME}")
-   - summarize_thread(thread_id="track:{AGENT_NAME}:{EPIC_ID}")
-   - file_reservation_paths(paths=["{FILE_SCOPE}"], reason="{BEAD_ID}")
-   - bd update {BEAD_ID} --status in_progress
+   - register_agent(name="<agent-name>")
+   - summarize_thread(thread_id="track:<agent-name>:<epic-id>")
+   - file_reservation_paths(paths=["<file-scope>"], reason="<bead-id>")
+   - bd update <bead-id> --status in_progress
 
 2. WORK
    - Implement the bead requirements
@@ -37,8 +37,8 @@ For EACH bead in your track:
    - Check inbox periodically
 
 3. COMPLETE BEAD
-   - bd close {BEAD_ID} --reason "..."
-   - send_message to orchestrator: "[{BEAD_ID}] COMPLETE"
+   - bd close <bead-id> --reason "..."
+   - send_message to orchestrator: "[<bead-id>] COMPLETE"
    - send_message to self (track thread): context for next bead
    - release_file_reservations()
 
@@ -47,7 +47,7 @@ For EACH bead in your track:
    - Continue with next bead
 
 ## When Track Complete
-- send_message to orchestrator: "[Track {N}] COMPLETE"
+- send_message to orchestrator: "[Track <track-number>] COMPLETE"
 - Return summary of all work
 
 ## Important

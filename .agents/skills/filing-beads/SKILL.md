@@ -100,3 +100,5 @@ After completing, provide:
 3. Dependency graph overview (what unblocks what)
 4. Suggested starting points (ready issues)
 5. Parallelization opportunities
+
+**Next step**: Run `skill("reviewing-beads")` to polish and validate issue quality.

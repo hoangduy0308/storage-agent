@@ -72,7 +72,7 @@ Return: Answer + key learnings for main plan
 
 ## Mode B: Epic Execution
 
-**Prerequisite**: Run the `planning` skill first to generate `history/<feature>/execution-plan.md`.
+**Prerequisite**: Run `planning`, `filing-beads`, and `reviewing-beads` skills first to produce `history/<feature>/execution-plan.md`.
 
 ## Architecture (Mode B: Autonomous)
 

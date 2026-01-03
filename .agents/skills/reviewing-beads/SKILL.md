@@ -140,3 +140,5 @@ Check:
 ## Iteration Tracking
 
 You may iterate up to 5 times. After 5 iterations: "The issues are thoroughly reviewed, well-documented, and ready for workers to implement."
+
+**Next step**: Run `bv --robot-triage` or `bv --robot-plan` to confirm graph health, then use `orchestrating-beads` skill to execute.

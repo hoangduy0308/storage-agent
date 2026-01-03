@@ -1,48 +1,49 @@
-# Execution Plan: <Feature Name>
+# Execution Plan: <feature-name>
 
 Epic: <epic-id>
 Generated: <date>
 
+> **Note**: Values like "BlueLake" and "packages/sdk/**" below are examples. Replace all `<placeholder>` values with your actual track assignments.
+
 ## Tracks
 
-| Track | Agent       | Beads (in order)      | File Scope        |
-| ----- | ----------- | --------------------- | ----------------- |
-| 1     | BlueLake    | bd-10 → bd-11 → bd-12 | `packages/sdk/**` |
-| 2     | GreenCastle | bd-20 → bd-21         | `packages/cli/**` |
-| 3     | RedStone    | bd-30 → bd-31 → bd-32 | `apps/server/**`  |
+| Track | Agent         | Beads (in order)          | File Scope          |
+| ----- | ------------- | ------------------------- | ------------------- |
+| 1     | <agent-name>  | <bead-id> → <bead-id>     | <file-scope>        |
+| 2     | <agent-name>  | <bead-id> → <bead-id>     | <file-scope>        |
+| 3     | <agent-name>  | <bead-id> → <bead-id>     | <file-scope>        |
 
 ## Track Details
 
-### Track 1: BlueLake - <track-description>
+### Track 1: <agent-name> - <track-description>
 
-**File scope**: `packages/sdk/**`
+**File scope**: <file-scope>
 **Beads**:
 
-1. `bd-10`: <title> - <brief description>
-2. `bd-11`: <title> - <brief description>
-3. `bd-12`: <title> - <brief description>
+1. `<bead-id>`: <title> - <brief description>
+2. `<bead-id>`: <title> - <brief description>
+3. `<bead-id>`: <title> - <brief description>
 
-### Track 2: GreenCastle - <track-description>
+### Track 2: <agent-name> - <track-description>
 
-**File scope**: `packages/cli/**`
+**File scope**: <file-scope>
 **Beads**:
 
-1. `bd-20`: <title> - <brief description>
-2. `bd-21`: <title> - <brief description>
+1. `<bead-id>`: <title> - <brief description>
+2. `<bead-id>`: <title> - <brief description>
 
-### Track 3: RedStone - <track-description>
+### Track 3: <agent-name> - <track-description>
 
-**File scope**: `apps/server/**`
+**File scope**: <file-scope>
 **Beads**:
 
-1. `bd-30`: <title> - <brief description>
-2. `bd-31`: <title> - <brief description>
-3. `bd-32`: <title> - <brief description>
+1. `<bead-id>`: <title> - <brief description>
+2. `<bead-id>`: <title> - <brief description>
+3. `<bead-id>`: <title> - <brief description>
 
 ## Cross-Track Dependencies
 
-- Track 2 can start after bd-11 (Track 1) completes
-- Track 3 has no cross-track dependencies
+- <describe any cross-track dependencies, e.g., "Track 2 can start after bd-11 (Track 1) completes">
 
 ## Key Learnings (from Spikes)
 

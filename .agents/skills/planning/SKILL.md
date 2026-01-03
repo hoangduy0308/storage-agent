@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Generates comprehensive feature plans by exploring the codebase, synthesizing approaches, validating risky parts with spikes, and decomposing work into beads. Use when a feature or implementation roadmap is needed.
+description: Generates feature plans by exploring the codebase, assessing risk with spikes, and decomposing work into beads. Use when a feature roadmap is needed.
 ---
 
 # Feature Planning Pipeline

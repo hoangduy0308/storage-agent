@@ -13,6 +13,8 @@ Build UI by searching, selecting, and installing shadcn components.
 - Adding UI components to project
 - Need consistent, accessible UI primitives
 
+Use shadcn MCP tools as the primary interface for component discovery and installation. Avoid other UI libraries unless explicitly requested.
+
 ## Workflow
 
 ### 1. Understand Requirements
@@ -151,3 +153,9 @@ import { Button } from "@/components/ui/button"
   </DialogContent>
 </Dialog>
 ```
+
+## Additional Resources
+
+For detailed checklists and patterns, see:
+- `reference/accessibility-checklist.md` - WCAG compliance, keyboard nav, ARIA patterns
+- `reference/responsive-patterns.md` - Tailwind breakpoints, mobile-first patterns
