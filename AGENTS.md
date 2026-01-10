@@ -1,7 +1,33 @@
 # Skills
 
-Workflow: `planning` → `filing-beads` → `reviewing-beads` → `orchestrating-beads` → `implementing-ui`.
-Use `frontend-design` skill for UI/UX design before `implementing-ui`.
+## Multi-Agent Workflow
+
+```mermaid
+flowchart LR
+    P[planning] --> O[orchestrator]
+    O --> W1[worker x N]
+    W1 -.-> IR[issue-resolution]
+    W1 --> K[knowledge]
+```
+
+| Skill | Purpose |
+|-------|---------|
+| **planning** | Creates execution plans with beads, tracks, and dependencies |
+| **orchestrator** | Spawns parallel worker agents and monitors progress |
+| **worker** | Executes beads within assigned tracks using Agent Mail |
+| **knowledge** | Extracts learnings from threads and updates documentation |
+| **issue-resolution** | Handles bugs through triage, RCA, and verified fixes |
+| **commit-messages** | Write clear commit messages following conventional format |
+| **frontend-design** | Create distinctive, production-grade frontend interfaces |
+
+### Typical Flow
+
+1. `planning` → Tạo execution plan với beads và tracks
+2. `orchestrator` → Spawn workers via `Task()`, mỗi worker load `worker` skill
+3. `worker` → Execute beads, report progress via Agent Mail
+4. `issue-resolution` → Dùng khi gặp bugs cần debug (optional)
+5. `knowledge` → Extract learnings, update docs sau khi hoàn thành
+6. `commit-messages` → Dùng khi commit changes
 
 ---
 
@@ -16,6 +42,8 @@ Use `frontend-design` skill for UI/UX design before `implementing-ui`.
 ---
 
 # Git Commit Convention (Conventional Commits)
+
+> 💡 Dùng `/skill commit-messages` để được hướng dẫn chi tiết.
 
 Format:
 ```
@@ -59,11 +87,12 @@ This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get sta
 bd ready                              # Tìm việc sẵn sàng (không bị block)
 bd list --status=open                 # Tất cả issues đang mở
 bd show <id>                          # Chi tiết issue + dependencies
-bd create --title="..." --type=task --priority=2
+bd create --title="..." --type=task --priority=2 --body-file=<desc.md>
 bd update <id> --status=in_progress   # Claim work
 bd close <id> --reason="Completed"    # Hoàn thành
 bd close <id1> <id2>                  # Đóng nhiều issues
 bd dep add <issue> <depends-on>       # Thêm dependency
+bd worktree create .worktrees/<name> --branch feature/<name>  # Isolate feature
 bd sync                               # Commit và push .beads changes
 ```
 
@@ -80,6 +109,7 @@ bd sync                               # Commit và push .beads changes
 - **Dependencies**: Issues có thể block nhau. `bd ready` chỉ hiện unblocked work
 - **Priority**: P0=critical, P1=high, P2=medium, P3=low, P4=backlog (dùng số)
 - **Types**: task, bug, feature, epic, question, docs
+- **Worktrees**: Dùng `bd worktree` để isolate feature work, tránh merge conflicts
 
 ---
 
@@ -124,6 +154,8 @@ git status  # PHẢI hiện "up to date with origin"
 bv --robot-triage    # MEGA-COMMAND: start here - trả về recommendations, quick wins, blockers
 bv --robot-next      # Minimal: chỉ top pick + claim command
 bv --robot-plan      # Parallel execution tracks
+bv --robot-suggest   # Find missing dependencies
+bv --robot-insights  # Detect cycles, bottlenecks
 ```
 
 ## Common Usage
@@ -134,6 +166,7 @@ bv --robot-triage | jq '.quick_ref'
 bv --robot-triage | jq '.recommendations[0]'
 
 # Lấy plan
+bv --robot-plan | jq '.plan.tracks'
 bv --robot-plan | jq '.plan.summary.highest_impact'
 
 # Filter theo label
@@ -143,13 +176,18 @@ bv --robot-triage --robot-triage-by-label
 
 **Scope boundary:** bv = triage/planning. Beads (bd) = task status. Agent Mail = coordination.
 
-> Xem thêm: `bv --help` cho full command reference.
-
 ---
 
 # Agent Mail Integration
 
 Khi tích hợp với MCP Agent Mail:
+
+## Thread Types
+
+| Thread | Purpose |
+|--------|---------|
+| `<epic-id>` | Cross-agent, orchestrator communication |
+| `track:<AgentName>:<epic-id>` | Personal context persistence per worker |
 
 ## Mapping Cheat-sheet
 
@@ -158,6 +196,15 @@ Khi tích hợp với MCP Agent Mail:
 | Issue ID `bd-###` | `thread_id` |
 | Issue title | Subject: `[bd-###] <title>` |
 | Issue ID | File reservation `reason` |
+
+## Worker Flow (per bead)
+
+```
+START: summarize_thread → fetch_inbox → file_reservation_paths → bd update
+WORK:  gkg tools → edit files → get_diagnostics → check inbox
+DONE:  verify → bd close → send_message (orchestrator) → send_message (self) → release
+NEXT:  loop to START
+```
 
 ## Typical Flow
 
@@ -174,3 +221,55 @@ Khi tích hợp với MCP Agent Mail:
 
 - KHÔNG tạo/quản lý tasks trong Mail - Beads là single task queue
 - LUÔN include `bd-###` trong `thread_id` để tránh ID drift
+
+---
+
+# Planning Skill Output Artifacts
+
+| Artifact | Location | Purpose |
+|----------|----------|---------|
+| Discovery Report | `history/<feature>/discovery.md` | Codebase snapshot |
+| Approach Document | `history/<feature>/approach.md` | Strategy + risks |
+| Spike Code | `.spikes/<feature>/` | Reference implementations |
+| Execution Plan | `history/<feature>/execution-plan.md` | Track assignments for orchestrator |
+
+---
+
+# Issue Resolution Pipeline
+
+Dùng `/skill issue-resolution` khi debug bugs:
+
+```
+INPUT → Triage → Reproduction → Root Cause Analysis → Impact → Fix → Verify
+             ◄──────────────►◄────────────────────►
+                   (Iterative loops allowed)
+```
+
+| Phase | Purpose | Output |
+|-------|---------|--------|
+| Triage | Normalize input, classify severity | Issue Brief |
+| Reproduction | Prove the bug, trace code path | Repro Report + Test |
+| Root Cause Analysis | Find WHY, not just WHERE | RCA Report |
+| Impact Assessment | Blast radius, regression risk | Impact Report |
+| Fix Decomposition | Break into beads | `.beads/*.md` |
+| Verification | Prove fix works, no regressions | Passing tests |
+
+Save artifacts to `history/issues/<id>/` (brief.md, repro.md, rca.md, impact.md).
+
+---
+
+# Tool Preferences
+
+| Task | Preferred Tool |
+|------|----------------|
+| Codebase structure | `mcp__gkg__repo_map` |
+| Find definitions | `mcp__gkg__search_codebase_definitions` |
+| Find usages | `mcp__gkg__get_references` |
+| External patterns | `librarian` |
+| Library docs | `mcp__exa__get_code_context_exa` |
+| Gap analysis | `oracle` |
+| Create beads | `bd create` |
+| Validate graph | `bv --robot-*` |
+
+<!-- bv-agent-instructions-v1 -->
+<!-- end-bv-agent-instructions -->
