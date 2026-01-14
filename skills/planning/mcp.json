@@ -1,5 +1,5 @@
 {
-	"gkg": {
+	"gkg-planning": {
 		"type": "http",
 		"url": "http://localhost:27495/mcp",
 		"includeTools": [
@@ -10,14 +10,18 @@
 			"read_definitions"
 		]
 	},
-
-	"morph-mcp": {
+	"morph-mcp-planning": {
 		"type": "stdio",
 		"command": "npx",
-		"args": ["-y", "@morphllm/morphmcp"],
+		"args": [
+			"-y",
+			"@morphllm/morphmcp"
+		],
 		"env": {
 			"ENABLED_TOOLS": "warpgrep_codebase_search"
 		},
-		"includeTools": ["warpgrep_codebase_search"]
+		"includeTools": [
+			"warpgrep_codebase_search"
+		]
 	}
 }

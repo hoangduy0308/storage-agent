@@ -1,16 +1,25 @@
 {
-	"gkg": {
+	"gkg-knowledge": {
 		"type": "http",
 		"url": "http://localhost:27495/mcp",
-		"includeTools": ["repo_map", "search_codebase_definitions", "get_references"]
+		"includeTools": [
+			"repo_map",
+			"search_codebase_definitions",
+			"get_references"
+		]
 	},
-	"morph-mcp": {
+	"morph-mcp-knowledge": {
 		"type": "stdio",
 		"command": "npx",
-		"args": ["-y", "@morphllm/morphmcp"],
+		"args": [
+			"-y",
+			"@morphllm/morphmcp"
+		],
 		"env": {
 			"ENABLED_TOOLS": "warpgrep_codebase_search"
 		},
-		"includeTools": ["warpgrep_codebase_search"]
+		"includeTools": [
+			"warpgrep_codebase_search"
+		]
 	}
 }

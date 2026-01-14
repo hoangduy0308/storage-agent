@@ -1,5 +1,5 @@
 {
-	"mcp-agent-mail": {
+	"mcp-agent-mail-worker": {
 		"type": "http",
 		"url": "http://127.0.0.1:8765/mcp/",
 		"headers": {
@@ -14,24 +14,37 @@
 			"release_file_reservations"
 		]
 	},
-	"gkg": {
+	"gkg-worker": {
 		"type": "http",
 		"url": "http://localhost:27495/mcp",
-		"includeTools": ["search_codebase_definitions", "get_definition", "get_references"]
+		"includeTools": [
+			"search_codebase_definitions",
+			"get_definition",
+			"get_references"
+		]
 	},
-	"morph-mcp": {
+	"morph-mcp-worker": {
 		"type": "stdio",
 		"command": "npx",
-		"args": ["-y", "@morphllm/morphmcp"],
+		"args": [
+			"-y",
+			"@morphllm/morphmcp"
+		],
 		"env": {
 			"ENABLED_TOOLS": "edit_file,warpgrep_codebase_search"
 		},
-		"includeTools": ["edit_file", "warpgrep_codebase_search"]
+		"includeTools": [
+			"edit_file",
+			"warpgrep_codebase_search"
+		]
 	},
-	"shadcn": {
+	"shadcn-worker": {
 		"type": "stdio",
 		"command": "npx",
-		"args": ["shadcn@latest", "mcp"],
+		"args": [
+			"shadcn@latest",
+			"mcp"
+		],
 		"includeTools": [
 			"search_items_in_registries",
 			"view_items_in_registries",

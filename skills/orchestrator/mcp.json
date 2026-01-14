@@ -1,5 +1,5 @@
 {
-	"mcp-agent-mail": {
+	"mcp-agent-mail-orchestrator": {
 		"type": "http",
 		"url": "http://127.0.0.1:8765/mcp/",
 		"headers": {
